@@ -37,57 +37,57 @@ namespace controle_financeiro_loja.Produtos
 
             return $"Nome: {produto.Nome}, Preço: R${produto.Preco}, Quantidade: {produto.Quantidade}, Data De Validade: {produto.DataValidade}";
         }
-        public void AdicionarItem(Produto codigoProduto, Empregado empregado)
+        public void AdicionarItem(Produto produto, Empregado empregado)
         {
             if (!(empregado is Gerente) && !(empregado is Dono))
             {
                 throw new ArgumentException("Apenas gerentes e donos podem adicionar itens no estoque");
             }
-            if (itens.Contains(codigoProduto))
+            if (itens.Contains(produto))
             {
                 throw new ArgumentException("Item já se encontra no estoque.");
             }
-            itens.Add(codigoProduto);            
-            Console.WriteLine("Novo item adicionado ao estoque " + codigoProduto.Nome);
+            itens.Add(produto);            
+            Console.WriteLine("Novo item adicionado ao estoque " + produto.Nome);
         }
-        public void RegistrarVenda(Empregado empregado, Produto codigoProduto, int quantidade) 
+        public void RegistrarVenda(Empregado empregado, Produto produto, int quantidade) 
         {
             if (!(empregado is Gerente) && !(empregado is Vendedor) && !(empregado is Dono))
             {
                 throw new ArgumentException("Apenas gerentes e vendedores podem registrar vendas");
             }
 
-            if (!itens.Contains(codigoProduto))
+            if (!itens.Contains(produto))
             {
                 throw new ArgumentException("Produto não encontrado no estoque");
             }
 
-            codigoProduto.Vender(quantidade);
-            Console.WriteLine("Vendido " + quantidade + " quantidades do produto " + codigoProduto.Nome);
+            produto.Vender(quantidade);
+            Console.WriteLine("Vendido " + quantidade + " quantidades do produto " + produto.Nome);
         }
-        public void RemoverItem(Produto codigoProduto, Empregado empregado)
+        public void RemoverItem(Produto produto, Empregado empregado)
         {
             if (!(empregado is Gerente) && !(empregado is Dono))
             {
                 throw new ArgumentException("Apenas gerentes podem remover os itens do estoque");
             }
-            itens.Remove(codigoProduto);
+            itens.Remove(produto);
             Produto.TotalProdutosDiferentes--;
             
         }
-        public void AdicionarQuantidade(Produto codigoProduto, int quantidade, Empregado empregado)
+        public void AdicionarQuantidade(Produto produto, int quantidade, Empregado empregado)
         {
             if (!(empregado is Gerente) && !(empregado is Repositor) && !(empregado is Dono))
             {
                 throw new ArgumentException("Apenas gerentes e repositores podem alterar a quantidade");
             }
-            if (!itens.Contains(codigoProduto))
+            if (!itens.Contains(produto))
             {
                 throw new ArgumentException("Item não encontrado no estoque.");
             }
 
-            codigoProduto.Quantidade += quantidade;
-            Console.WriteLine("A Quantidade " + quantidade + " do item " + codigoProduto.Nome + ", foi adicionada ao estoque");
+            produto.Quantidade += quantidade;
+            Console.WriteLine("A Quantidade " + quantidade + " do item " + produto.Nome + ", foi adicionada ao estoque");
         }                       
     }
 }
