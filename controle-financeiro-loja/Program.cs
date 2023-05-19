@@ -48,6 +48,7 @@ void UsarSistema()
                 {
                     Console.WriteLine("Escolha uma das opções digitando o numero referente a escolhida");
                     Console.WriteLine("1. Adicionar Funcionário");
+                    Console.WriteLine("");
                     Console.WriteLine("Digite VOLTAR para voltar ao menu anterior");
                     escolha = Console.ReadLine();
 
@@ -58,15 +59,15 @@ void UsarSistema()
                     switch (escolha.ToLower())
                     {
                         case "1":
-                            MenuCriarGerente();
+                            MenuCriaFuncionario();
                             break;
 
                         case "2":
 
+
                             break;
                     }
                 }
-
             }
             // Login bem-sucedido, realizar as ações desejadas para o tipo de empregado
             if (empregado is Gerente)
@@ -88,7 +89,7 @@ void UsarSistema()
                     switch (escolha.ToLower())
                     {
                         case "1":
-                            MenuCriarGerente();
+                            MenuCriaFuncionario();
                             break;
 
                         case "2":
@@ -112,38 +113,58 @@ void UsarSistema()
         {
             // Login falhou
             Console.WriteLine("CPF ou senha incorretos.");
-        }       
+        }
+
+
+
+        void MenuCriaFuncionario()
+        {
+            Console.WriteLine("Digite o cargo do funcionário: Gerente, Vendedor, Repositor");
+            string cargo = Console.ReadLine();
+            while (cargo.ToLower() != "gerente" && cargo.ToLower() != "vendedor" && cargo.ToLower() != "repositor")
+            {
+                Console.WriteLine("Cargo inválido! por favor escolha um cargo válido");
+                cargo = Console.ReadLine();
+            }
+            Console.WriteLine("Digite o Nome do funcionário");
+            string nome = Console.ReadLine();
+            Console.WriteLine("Digite o CPF do funcionário");
+            string cpf = Console.ReadLine();
+            Console.WriteLine("Digite o Salário do funcionário");
+            double salario = double.Parse(Console.ReadLine());
+            Console.WriteLine("Digite a Senha de ACESSO ao sistema do funcionário");
+            string senha = Console.ReadLine();
+            if (cargo.ToLower() == "gerente")
+            {
+                Gerente gerente = new Gerente(nome, cpf, salario, senha);
+                listasDeEmpregados.AddGerenteALista(empregado, gerente);
+                Console.WriteLine(listasDeEmpregados.ObterPropriedadesGerente(cpf));
+                Console.ReadKey();
+                Console.Clear();
+            }
+            if (cargo.ToLower() == "repositor")
+            {
+                Repositor repositor = new Repositor(nome, cpf, salario, senha);
+                listasDeEmpregados.AddRepositorALista(empregado, repositor);
+                Console.WriteLine(listasDeEmpregados.ObterPropriedadesGerente(cpf));
+                Console.ReadKey();
+                Console.Clear();
+            }
+            if (cargo.ToLower() == "vendedor")
+            {
+                Vendedor vendedor = new Vendedor(nome, cpf, salario, senha);
+                listasDeEmpregados.AddVendedorALista(empregado, vendedor);
+                Console.WriteLine(listasDeEmpregados.ObterPropriedadesGerente(cpf));
+                Console.ReadKey();
+                Console.Clear();
+            }            
+        }
     }
     while (true);
     
 
 
-void MenuCriarGerente()
-    {
-        Console.WriteLine("Digite o cargo do funcionário: Gerente, Vendedor, Repositor");
-        string cargo = Console.ReadLine();
-        while (cargo.ToLower() != "gerente" && cargo.ToLower() != "vendedor" && cargo.ToLower() != "repositor")
-        {
-            Console.WriteLine("Cargo inválido! por favor escolha um cargo válido");
-            cargo = Console.ReadLine();
-        }
-        Console.WriteLine("Digite o Nome do funcionário");
-        string nome = Console.ReadLine();
-        Console.WriteLine("Digite o CPF do funcionário");
-        string cpf = Console.ReadLine();
-        Console.WriteLine("Digite o Salário do funcionário");
-        double salario = double.Parse(Console.ReadLine());
-        Console.WriteLine("Digite a Senha de ACESSO ao sistema do funcionário");
-        string senha = Console.ReadLine();
-        if (cargo.ToLower() == "gerente")
-        {
-            Gerente gerente = new Gerente(nome, cpf, salario, senha);
-            listasDeEmpregados.AddGerenteALista(dono1, gerente);
-            Console.WriteLine(listasDeEmpregados.ObterPropriedadesGerente(cpf));
-            Console.ReadKey();
-            Console.Clear();
-        }
-    }
+
 }
 
 UsarSistema();
