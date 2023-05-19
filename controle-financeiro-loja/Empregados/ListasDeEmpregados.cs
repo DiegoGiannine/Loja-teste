@@ -1,4 +1,5 @@
-﻿using System;
+﻿using controle_financeiro_loja.Produtos;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -23,6 +24,16 @@ namespace controle_financeiro_loja.Empregados
             ListaGerentes = new List<Empregado>();
             ListaVendedores = new List<Empregado>();
             ListaRepositores = new List<Empregado>();                
+        }
+        public string ObterPropriedadesGerente(string cpf)
+        {
+            Empregado empregado = ListaGerentes.FirstOrDefault(p => p.Cpf == cpf);
+            if (empregado == null)
+            {
+                throw new ArgumentException("Empregado não encontrado");
+            }
+
+            return $"Nome: {empregado.Nome}, Cpf: {empregado.Cpf}, Salário: R${empregado.Salario}, Senha: {empregado.Senha}";
         }
         public void AddDonoALista(Empregado quemEstaAlterando, Dono dono)
         {
