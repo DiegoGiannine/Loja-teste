@@ -1,6 +1,5 @@
 ﻿using controle_financeiro_loja.Empregados;
 using controle_financeiro_loja.Produtos;
-using controle_financeiro_loja.SistemaInterno;
 using System.Collections.Concurrent;
 using System.ComponentModel;
 using System.Net.Http.Headers;
@@ -9,15 +8,13 @@ using System.Net.Mail;
 
 
 void UsarSistema()
-{
-    SistemaInterno sistema = new SistemaInterno();
-
+{    
     Dono dono1 = new Dono("Diego", "654321", 0, "123456");
 
     Estoque estoque = new Estoque(dono1);
 
     ListasDeEmpregados listasDeEmpregados = new ListasDeEmpregados(dono1);
-    listasDeEmpregados.AddDonoALista(dono1, dono1);    
+    listasDeEmpregados.AdicionarFuncionario("654321", dono1);    
 
     do
     {
@@ -28,19 +25,9 @@ void UsarSistema()
         string loginSenha = Console.ReadLine();
 
         string enunciadoEscolhas = "Escolha uma das opções digitando o numero referente a escolhida";
-        Empregado empregado = null;             
-
-            // Procurar nas listas correspondentes ao tipo de empregado
-            empregado = listasDeEmpregados.ListaDonos.FirstOrDefault(g => g.Cpf == loginCpf && g.Senha == loginSenha);
-        if (empregado == null)
-            empregado = listasDeEmpregados.ListaGerentes.FirstOrDefault(v => v.Cpf == loginCpf && v.Senha == loginSenha);
-        if (empregado == null)
-            empregado = listasDeEmpregados.ListaVendedores.FirstOrDefault(r => r.Cpf == loginCpf && r.Senha == loginSenha);
-        if (empregado == null)
-            empregado = listasDeEmpregados.ListaRepositores.FirstOrDefault(r => r.Cpf == loginCpf && r.Senha == loginSenha);
-
+        Empregado empregado = listasDeEmpregados.RealizarLogin(loginCpf, loginSenha);
         if (empregado != null)
-        {
+        {        
             if(empregado is Dono)
             {
                 Console.Clear();
@@ -48,8 +35,7 @@ void UsarSistema()
                 Console.WriteLine("Bem Vindo ao Sistema Proprietário " + empregado.Nome);
                 Console.ReadKey();
 
-                string escolha = "";
-                
+                string escolha = "";                
 
                 while (escolha != "voltar")
                 {
@@ -89,16 +75,22 @@ void UsarSistema()
                             Console.Clear();
                             Console.WriteLine(enunciadoEscolhas);
                             Console.WriteLine("1. Criar e adicionar um Produto ao Estoque");
-                            Console.WriteLine("");
-                            Console.WriteLine("Digite VOLTAR para voltar ao menu anterior");
+                            Console.WriteLine("2. Vender Produto");
+                            Console.WriteLine("5. Voltar");
+                            Console.WriteLine("");                            
                             string caso2 = Console.ReadLine();
-                            while (caso2.ToLower() != "voltar")
+                            switch (caso2.ToLower())
                             {
-                                if (caso2.ToLower() == "1")
-                                {
+                                case "1":                                
                                     CriaEAddPordutoEstoque();
                                     break;
-                                }
+
+                                case "2":
+                                    RegistraVenda();
+                                    break;
+
+                                case "5":
+                                    break;                                
                             }                            
                             break;
                     }
@@ -119,6 +111,8 @@ void UsarSistema()
                     Console.Clear();
                     Console.WriteLine(enunciadoEscolhas);
                     Console.WriteLine("1. Funcionários");
+                    Console.WriteLine("2. Estoque");
+                    Console.WriteLine("");
                     Console.WriteLine("Digite VOLTAR para voltar ao menu anterior");
                     escolha = Console.ReadLine();
 
@@ -147,27 +141,59 @@ void UsarSistema()
                             Console.Clear();
                             Console.WriteLine(enunciadoEscolhas);
                             Console.WriteLine("1. Criar e adicionar um Produto ao Estoque");
+                            Console.WriteLine("2. Vender Produto");
+                            Console.WriteLine("5. Voltar");
                             Console.WriteLine("");
-                            Console.WriteLine("Digite VOLTAR para voltar ao menu anterior");
                             string caso2 = Console.ReadLine();
-                            while (caso2.ToLower() != "voltar")
+                            switch (caso2.ToLower())
                             {
-                                if (caso2.ToLower() == "1")
-                                {
+                                case "1":
                                     CriaEAddPordutoEstoque();
                                     break;
-                                }
+
+                                case "2":
+                                    RegistraVenda();
+                                    break;
+
+                                case "5":
+                                    break;
                             }
                             break;
                     }
                 }
             }
-            else if (empregado is Vendedor)
+            if (empregado is Vendedor)
             {
                 Console.Clear();
                 Console.WriteLine("A senha é válida!");
                 // Ações para o Vendedor
                 Console.WriteLine("Vendedor logado com sucesso!");
+                Console.ReadKey();
+
+                string escolha = "";
+                while (escolha != "voltar")
+                {
+                    Console.Clear();
+                    Console.WriteLine(enunciadoEscolhas);
+                    Console.WriteLine("1. Registrar Venda");
+                    Console.WriteLine("");
+                    Console.WriteLine("Digite VOLTAR para voltar ao menu anterior");
+                    escolha = Console.ReadLine();
+
+                    if (escolha.ToLower() == "voltar")
+                    {
+                        break;
+                    }
+                    switch (escolha.ToLower())
+                    {
+                        case "1":
+                            RegistraVenda();
+                            break;
+
+                        case "2":
+                            break;
+                    }
+                }
             }
             else if (empregado is Repositor)
             {
@@ -175,6 +201,32 @@ void UsarSistema()
                 Console.WriteLine("A senha é válida!");
                 // Ações para o Repositor
                 Console.WriteLine("Repositor logado com sucesso!");
+                Console.ReadKey();
+
+                string escolha = "";
+                while (escolha != "voltar")
+                {
+                    Console.Clear();
+                    Console.WriteLine(enunciadoEscolhas);
+                    Console.WriteLine("1.  Criar e adicionar um Produto ao Estoque");
+                    Console.WriteLine("");
+                    Console.WriteLine("Digite VOLTAR para voltar ao menu anterior");
+                    escolha = Console.ReadLine();
+
+                    if (escolha.ToLower() == "voltar")
+                    {
+                        break;
+                    }
+                    switch (escolha.ToLower())
+                    {
+                        case "1":
+                            CriaEAddPordutoEstoque();
+                            break;
+
+                        case "2":
+                            break;
+                    }
+                }
             }
         }
         else
@@ -204,24 +256,27 @@ void UsarSistema()
             if (cargo.ToLower() == "gerente")
             {
                 Gerente gerente = new Gerente(nome, cpf, salario, senha);
-                listasDeEmpregados.AddGerenteALista(empregado, gerente);
-                Console.WriteLine(listasDeEmpregados.ObterPropriedadesGerente(cpf));
+                listasDeEmpregados.AdicionarFuncionario(cpf, gerente);
+                Console.WriteLine("Funcionário " + gerente.Nome + " Foi adicionado ao banco");
+                listasDeEmpregados.ExibirInformacoesFuncionario(cpf);
                 Console.ReadKey();
                 Console.Clear();
             }
             if (cargo.ToLower() == "repositor")
             {
                 Repositor repositor = new Repositor(nome, cpf, salario, senha);
-                listasDeEmpregados.AddRepositorALista(empregado, repositor);
-                Console.WriteLine(listasDeEmpregados.ObterPropriedadesGerente(cpf));
+                listasDeEmpregados.AdicionarFuncionario(cpf, repositor);
+                Console.WriteLine("Funcionário " + repositor.Nome + " Foi adicionado ao banco");
+                listasDeEmpregados.ExibirInformacoesFuncionario(cpf);
                 Console.ReadKey();
                 Console.Clear();
             }
             if (cargo.ToLower() == "vendedor")
             {
                 Vendedor vendedor = new Vendedor(nome, cpf, salario, senha);
-                listasDeEmpregados.AddVendedorALista(empregado, vendedor);
-                Console.WriteLine(listasDeEmpregados.ObterPropriedadesGerente(cpf));
+                listasDeEmpregados.AdicionarFuncionario(cpf, vendedor);
+                Console.WriteLine("Funcionário " + vendedor.Nome + " Foi adicionado ao banco");
+                listasDeEmpregados.ExibirInformacoesFuncionario(cpf);
                 Console.ReadKey();
                 Console.Clear();
             }            
@@ -243,19 +298,27 @@ void UsarSistema()
 
             Console.WriteLine("Digite a Data de Validade");
             DateOnly dataValidade = DateOnly.Parse(Console.ReadLine());
+            Console.Clear();
 
-            Produto produto = new Produto(codigoProduto, nomeProduto, preco, quantidade, dataValidade);
+            estoque.AdicionarItem(empregado, codigoProduto, nomeProduto, preco, quantidade, dataValidade);
+            estoque.ExibirInformacoesProduto(empregado, codigoProduto);
+            Console.ReadKey();
+            Console.Clear();
+        }
+        void RegistraVenda()
+        {
+            Console.Clear();
+            Console.WriteLine("Digite o Código do Produto");
+            int codigoProduto = int.Parse(Console.ReadLine());
 
-            estoque.AdicionarItem(produto, empregado);
-            Console.WriteLine(estoque.ObterPropriedadesProduto(codigoProduto));
-            Console.ReadKey();            
+            Console.WriteLine("Digite a Quantidade do Produto a Vender");
+            int quantidade = int.Parse(Console.ReadLine());
+            Console.Clear();
+            estoque.RegistrarVenda(empregado, codigoProduto, quantidade);
+            Console.ReadKey();
         }
     }
     while (true);
-    
-
-
-
 }
 
 UsarSistema();

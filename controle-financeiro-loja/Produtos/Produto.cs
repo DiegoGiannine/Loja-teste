@@ -1,5 +1,4 @@
 ﻿using controle_financeiro_loja.Empregados;
-using controle_financeiro_loja.SistemaInterno;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,8 +17,7 @@ namespace controle_financeiro_loja.Produtos
         public DateOnly DataValidade { get; set; }
         public int QuantidadeVendida { get; private set; }
         public static double ValorRecebido { get; private set; }
-        public static double ValorTotalRecebido { get; private set; } 
-        public static int TotalProdutosDiferentes { get;  set; }
+        public static double ValorTotalRecebido { get; private set; }         
         public Produto(int codigoProduto, string nome, double preco, int quantidade, DateOnly dataValidade)
         {
             this.CodigoProduto = codigoProduto;
@@ -28,8 +26,7 @@ namespace controle_financeiro_loja.Produtos
             this.Quantidade = quantidade;
             this.DataValidade = dataValidade;
             this.QuantidadeVendida = 0;
-            ValorTotalRecebido = 0;
-            TotalProdutosDiferentes++;
+            ValorTotalRecebido = 0;            
         }        
         public void Vender(int quantidade)
         {
@@ -48,6 +45,10 @@ namespace controle_financeiro_loja.Produtos
             ValorRecebido = QuantidadeVendida * Preco;
             ValorTotalRecebido += ValorRecebido;
             Console.WriteLine("Venda Registrada");                        
-        }                
+        }
+        public string ObterPropriedadesProduto()
+        {
+            return $"Código: {CodigoProduto}\nNome: {Nome}\nQuantidade em estoque: {Quantidade}\nPreço: ${Preco}\nData de Validade: {DataValidade}";
+        }
     }
 }

@@ -1,5 +1,4 @@
 ﻿using controle_financeiro_loja.Produtos;
-using controle_financeiro_loja.SistemaInterno;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;

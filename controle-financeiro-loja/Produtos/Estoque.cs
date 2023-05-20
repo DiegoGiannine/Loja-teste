@@ -5,89 +5,95 @@ using System.Linq;
 using System.Net.Mail;
 using System.Text;
 using System.Threading.Tasks;
-using controle_financeiro_loja.SistemaInterno;
 using System.Runtime.CompilerServices;
 
 namespace controle_financeiro_loja.Produtos
 {
     public class Estoque
-    {               
-        public List<Produto> itens;
-
-        public Estoque(List<Produto> itens)
-        {
-            this.itens = itens;
-        }       
-               
+    {        
+        private Dictionary<int, Produto> produtos;
         public Estoque(Empregado empregado)
         {
             if (!(empregado is Gerente) && !(empregado is Dono))
             {
                 throw new ArgumentException("Apenas gerentes e donos podem criar estoques");
             }
-            itens = new List<Produto>();                        
+            produtos = new Dictionary<int, Produto>();
         }
-        public string ObterPropriedadesProduto(int codigoProduto)
+        public void ExibirInformacoesProduto(Empregado empregado, int codigoProduto)
         {
-            Produto produto = itens.FirstOrDefault(p => p.CodigoProduto == codigoProduto);
-            if (produto == null)
+            if (produtos.ContainsKey(codigoProduto))
             {
-                throw new ArgumentException("Produto não encontrado no estoque");
+                Produto produto = produtos[codigoProduto];
+                Console.WriteLine(produto.ObterPropriedadesProduto());
             }
-
-            return $"Nome: {produto.Nome}, Preço: R${produto.Preco}, Quantidade: {produto.Quantidade}, Data De Validade: {produto.DataValidade}";
+            else
+            {
+                Console.WriteLine("Produto não encontrado.");
+            }
         }
-        public void AdicionarItem(Produto produto, Empregado empregado)
+        public void AdicionarItem(Empregado empregado, int codigoProduto, string nomeProduto, double preco, int quantidadeProduto, DateOnly dataValidade)
         {
-            if (!(empregado is Gerente) && !(empregado is Dono))
             {
-                throw new ArgumentException("Apenas gerentes e donos podem adicionar itens no estoque");
+                Produto produto = new Produto(codigoProduto, nomeProduto,preco , quantidadeProduto, dataValidade);
+                produtos.Add(codigoProduto, produto);
             }
-            if (itens.Contains(produto))
-            {
-                throw new ArgumentException("Item já se encontra no estoque.");
-            }
-            itens.Add(produto);            
-            Console.WriteLine("Novo item adicionado ao estoque " + produto.Nome);
         }
-        public void RegistrarVenda(Empregado empregado, Produto produto, int quantidade) 
+        public void RegistrarVenda(Empregado empregado,  int codigoProduto, int quantidadeVendida)
         {
-            if (!(empregado is Gerente) && !(empregado is Vendedor) && !(empregado is Dono))
+            if (produtos.ContainsKey(codigoProduto))
             {
-                throw new ArgumentException("Apenas gerentes e vendedores podem registrar vendas");
+                Produto produto = produtos[codigoProduto];
+                if (produto.Quantidade >= quantidadeVendida)
+                {
+                    produto.Vender(quantidadeVendida);
+                    Console.WriteLine("Vendido " + quantidadeVendida + " quantidades do produto " + produto.Nome + "\nValor Total da Venda R$" + Produto.ValorRecebido);
+                }
+                else
+                {
+                    Console.WriteLine("Quantidade insuficiente em estoque.");
+                }
             }
-
-            if (!itens.Contains(produto))
+            else
             {
-                throw new ArgumentException("Produto não encontrado no estoque");
+                Console.WriteLine("Produto não encontrado.");
             }
-
-            produto.Vender(quantidade);
-            Console.WriteLine("Vendido " + quantidade + " quantidades do produto " + produto.Nome);
-        }
-        public void RemoverItem(Produto produto, Empregado empregado)
+        }        
+        public void RemoverItem(Empregado empregado, int codigoProduto)
         {
             if (!(empregado is Gerente) && !(empregado is Dono))
             {
                 throw new ArgumentException("Apenas gerentes podem remover os itens do estoque");
             }
-            itens.Remove(produto);
-            Produto.TotalProdutosDiferentes--;
+            if (produtos.ContainsKey(codigoProduto))
+            {
+                produtos.Remove(codigoProduto);
+                Console.WriteLine("Produto removido com sucesso!");
+            }
+            else
+            {
+                Console.WriteLine("Produto não encontrado.");
+            }
+            
             
         }
-        public void AdicionarQuantidade(Produto produto, int quantidade, Empregado empregado)
+        public void AdicionarQuantidade(Empregado empregado, int codigoProduto, int quantidade)
         {
             if (!(empregado is Gerente) && !(empregado is Repositor) && !(empregado is Dono))
             {
                 throw new ArgumentException("Apenas gerentes e repositores podem alterar a quantidade");
             }
-            if (!itens.Contains(produto))
+            if (produtos.ContainsKey(codigoProduto))
             {
-                throw new ArgumentException("Item não encontrado no estoque.");
+                Produto produto = produtos[codigoProduto];
+                produto.Quantidade += quantidade;
+                Console.WriteLine($"Quantidade adicionada ao estoque: {quantidade}");
+                Console.WriteLine($"Quantidade atual em estoque: {produto.Quantidade}");
             }
-
-            produto.Quantidade += quantidade;
-            Console.WriteLine("A Quantidade " + quantidade + " do item " + produto.Nome + ", foi adicionada ao estoque");
+            else
+            {
+                Console.WriteLine("Produto não encontrado.");
+            }            
         }                       
     }
 }

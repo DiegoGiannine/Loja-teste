@@ -7,103 +7,59 @@ using System.Threading.Tasks;
 
 namespace controle_financeiro_loja.Empregados
 {
-    internal class ListasDeEmpregados
+    public class ListasDeEmpregados
     {
-        public List<Empregado> ListaDonos { get; private set; }
-        public List<Empregado> ListaGerentes { get; private set; }
-        public List<Empregado> ListaVendedores { get; private set; }
-        public List<Empregado> ListaRepositores { get; private set; }
-        
+        private Dictionary<string, Empregado> empregados;        
         public ListasDeEmpregados(Empregado empregado)
         {
             if (!(empregado is Dono))
             {
                 throw new ArgumentException("Apenas gerentes podem criar listas");
-            }
-            ListaDonos = new List<Empregado>();
-            ListaGerentes = new List<Empregado>();
-            ListaVendedores = new List<Empregado>();
-            ListaRepositores = new List<Empregado>();                
-        }
-        public string ObterPropriedadesGerente(string cpf)
-        {
-            Empregado empregado = ListaGerentes.FirstOrDefault(p => p.Cpf == cpf);
-            if (empregado == null)
-            {
-                throw new ArgumentException("Empregado não encontrado");
-            }
-
-            return $"Nome: {empregado.Nome}, Cpf: {empregado.Cpf}, Salário: R${empregado.Salario}, Senha: {empregado.Senha}";
-        }
-        public void AddDonoALista(Empregado quemEstaAlterando, Dono dono)
-        {
-            if (!(quemEstaAlterando is Dono))
-            {
-                throw new ArgumentException("Apenas Donos e Gerentes podem adicionar empregados a listas");
-            }
-            ListaDonos.Add(dono);            
-        }
-        public void AddVendedorALista(Empregado quemEstaAlterando, Vendedor vendedor)
-        {
-            if (!(quemEstaAlterando is Dono) && !(quemEstaAlterando is Gerente))
-            {
-                throw new ArgumentException("Apenas Donos e Gerentes podem adicionar empregados a listas");
             }            
-            ListaVendedores.Add(vendedor);
-            Console.WriteLine("O vendedor " + vendedor.Nome + " foi adicionado no Banco de vendedores");
+            empregados = new Dictionary<string, Empregado>();            
         }
-        public void AddGerenteALista(Empregado quemEstaAlterando, Gerente gerente)
+        public void ExibirInformacoesFuncionario(string cpf)
         {
-            if(quemEstaAlterando == gerente)
+            if (empregados.ContainsKey(cpf))
             {
-                throw new ArgumentException("Você não pode se adicionar a lista");
+                Empregado empregado = empregados[cpf];
+                if (empregado is Gerente gerente)
+                {
+                    Console.WriteLine($"Nome: {empregado.Nome}, Cpf: {empregado.Cpf}, Salário: R${empregado.Salario}, Senha: {empregado.Senha}");
+                }
+                else if (empregado is Repositor repositor)
+                {
+                    Console.WriteLine($"Nome: {empregado.Nome}, Cpf: {empregado.Cpf}, Salário: R${empregado.Salario}, Senha: {empregado.Senha}");
+                }
+                else if (empregado is Vendedor vendedor)
+                {
+                    Console.WriteLine($"Nome: {empregado.Nome}, Cpf: {empregado.Cpf}, Salário: R${empregado.Salario}, Senha: {empregado.Senha}");
+                }
             }
-            if (!(quemEstaAlterando is Dono) && !(quemEstaAlterando is Gerente))
+            else
             {
-                throw new ArgumentException("Apenas Donos e Gerentes podem adicionar empregados a listas");
-            }            
-            ListaGerentes.Add(gerente);
-            Console.WriteLine("O gerente " + gerente.Nome + " foi adicionado no Banco de gerentes");
+                Console.WriteLine("Funcionário não encontrado.");
+            }
+        }        
+        public void AdicionarFuncionario(string cpf, Empregado empregado)
+        {            
+            empregados.Add(cpf, empregado);            
         }
-        public void AddRepositorALista(Empregado quemEstaAlterando, Repositor repositor)
+        public void RemoverFuncionario(Empregado empregado, string cpf)
         {
-            if (!(quemEstaAlterando is Dono) && !(quemEstaAlterando is Gerente))
+            if (!(empregado is Dono) && !(empregado is Gerente))
             {
-                throw new ArgumentException("Apenas Donos e Gerentes podem adicionar empregados a listas");
+                throw new ArgumentException("Apenas Donos e Gerentes podem calcular salarios dos empregados");
             }
-            ListaRepositores.Add(repositor);
-            Console.WriteLine("O repositor " + repositor.Nome + " foi adicionado no Banco de repositores");
-        }
-        public void RemoverVendedorDaLista(Empregado quemEstaAlterando, Vendedor vendedor)
-        {
-            if (!(quemEstaAlterando is Dono) && !(quemEstaAlterando is Gerente))
+            if (empregados.ContainsKey(cpf))
             {
-                throw new ArgumentException("Apenas Donos e Gerentes podem remover empregados a listas");
+                empregados.Remove(cpf);
+                Console.WriteLine("Funcionário removido com sucesso!");
             }
-            ListaVendedores.Remove(vendedor);
-            Console.WriteLine("O vendedor " + vendedor.Nome + " foi removido do Banco de vendedores");
-        }
-        public void RemoverGerenteDaLista(Empregado quemEstaAlterando, Gerente gerente)
-        {
-            if (quemEstaAlterando == gerente)
+            else
             {
-                throw new ArgumentException("Você não pode se remover da lista");
+                Console.WriteLine("Funcionário não encontrado.");
             }
-            if (!(quemEstaAlterando is Dono) && !(quemEstaAlterando is Gerente))
-            {
-                throw new ArgumentException("Apenas Donos e Gerentes podem remover empregados a listas");
-            }
-            ListaGerentes.Remove(gerente);
-            Console.WriteLine("O gerente " + gerente.Nome + " foi removido do Banco de gerentes");
-        }
-        public void RemoverVendedorDaLista(Empregado quemEstaAlterando, Repositor repositor)
-        {
-            if (!(quemEstaAlterando is Dono) && !(quemEstaAlterando is Gerente))
-            {
-                throw new ArgumentException("Apenas Donos e Gerentes podem remover empregados a listas");
-            }
-            ListaRepositores.Remove(repositor);
-            Console.WriteLine("O repositor " + repositor.Nome + " foi removido do Banco de repositores");
         }
         public double SomarSalariosGerentes(Empregado empregado)
         {
@@ -114,9 +70,12 @@ namespace controle_financeiro_loja.Empregados
             }
             double somaSalarios = 0;
 
-            foreach (Gerente gerente in ListaGerentes)
+            foreach (var funcionario in empregados.Values)
             {
-                somaSalarios += gerente.Salario;
+                if (funcionario is Gerente gerente)
+                {
+                    somaSalarios += gerente.Salario;
+                }
             }
             return somaSalarios;
         }
@@ -129,9 +88,12 @@ namespace controle_financeiro_loja.Empregados
             }
             double somaSalarios = 0;
 
-            foreach (Repositor repositor in ListaRepositores)
+            foreach (var funcionario in empregados.Values)
             {
-                somaSalarios += repositor.Salario;
+                if (funcionario is Repositor repositor)
+                {
+                    somaSalarios += repositor.Salario;
+                }
             }
             return somaSalarios;
 
@@ -145,12 +107,27 @@ namespace controle_financeiro_loja.Empregados
             }
             double somaSalarios = 0;
 
-            foreach (Vendedor vendedor in ListaVendedores)
+            foreach (var funcionario in empregados.Values)
             {
-                somaSalarios += vendedor.Salario;
+                if (funcionario is Vendedor vendedor)
+                {
+                    somaSalarios += vendedor.Salario;
+                }
             }
             return somaSalarios;
 
+        }
+        public Empregado RealizarLogin(string cpf, string senha)
+        {
+            if (empregados.ContainsKey(cpf))
+            {
+                Empregado empregado = empregados[cpf];
+                if (empregado.Senha == senha)
+                {                   
+                    return empregado;
+                }                
+            }
+            return null;
         }
     }
 }
