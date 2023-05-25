@@ -68,7 +68,7 @@ namespace controle_financeiro_loja.Produtos
             if (produtos.ContainsKey(codigoProduto))
             {
                 produtos.Remove(codigoProduto);
-                Console.WriteLine("Produto removido com sucesso!");
+                Console.WriteLine("Produto " + codigoProduto + " removido com sucesso!");
             }
             else
             {

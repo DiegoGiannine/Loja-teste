@@ -45,7 +45,7 @@ void UsarSistema()
                     Console.WriteLine("1. Funcionários");
                     Console.WriteLine("2. Estoque");
                     Console.WriteLine("");
-                    Console.WriteLine("5 VOLTAR ao menu anterior");
+                    Console.WriteLine("5. VOLTAR ao menu anterior");
 
                     escolha = Console.ReadLine();                    
                     switch (escolha.ToLower())
@@ -79,9 +79,12 @@ void UsarSistema()
                             Console.Clear();
                             Console.WriteLine(enunciadoEscolhas);
                             Console.WriteLine("1. Criar e adicionar um Produto ao Estoque");
-                            Console.WriteLine("2. Vender Produto");                            
+                            Console.WriteLine("2. Vender Produto");
+                            Console.WriteLine("3. Exibir Dados do Produto");
+                            Console.WriteLine("4. Adicionar Quantidade a Um Produto");
+                            Console.WriteLine("5. Romover o Produto do Estoque");
                             Console.WriteLine("");
-                            Console.WriteLine("5 VOLTAR ao menu anterior");
+                            Console.WriteLine("6. VOLTAR ao menu anterior");
 
                             string caso2 = Console.ReadLine();
                             switch (caso2.ToLower())
@@ -98,8 +101,16 @@ void UsarSistema()
                                     ExibirDadosProduto();
                                     break;
 
+                                case "4":
+                                    AdicionarQuantidade();
+                                    break;
+
                                 case "5":
-                                    break;                                
+                                    RemoveItemEstoque();
+                                    break;
+
+                                case "6":
+                                    break;
                             }                            
                             break;
 
@@ -124,9 +135,9 @@ void UsarSistema()
                     Console.Clear();
                     Console.WriteLine(enunciadoEscolhas);
                     Console.WriteLine("1. Funcionários");
-                    Console.WriteLine("2. Estoque");
+                    Console.WriteLine("2. Estoque");                    
                     Console.WriteLine("");
-                    Console.WriteLine("Digite VOLTAR para voltar ao menu anterior");
+                    Console.WriteLine("5. Para VOLTAR para voltar ao menu anterior");
 
                     escolha = Console.ReadLine();                    
                     switch (escolha.ToLower())
@@ -142,10 +153,10 @@ void UsarSistema()
                             switch (escolha2.ToLower())
                             {
                                 case "1":
-                                    {
-                                        CriaFuncionario();
-                                        break;
-                                    }
+                                    
+                                    CriaFuncionario();
+                                    break;
+                                    
                                 case "2":
                                     ExibirDadosFuncionarios();
                                     break;
@@ -160,8 +171,11 @@ void UsarSistema()
                             Console.WriteLine(enunciadoEscolhas);
                             Console.WriteLine("1. Criar e adicionar um Produto ao Estoque");
                             Console.WriteLine("2. Vender Produto");
+                            Console.WriteLine("3. Exibir Dados do Produto");
+                            Console.WriteLine("4. Adicionar Quantidade a Um Produto");
+                            Console.WriteLine("5. Romover o Produto do Estoque");
                             Console.WriteLine("");
-                            Console.WriteLine("5 VOLTAR ao menu anterior");
+                            Console.WriteLine("6. VOLTAR ao menu anterior");
 
                             string caso2 = Console.ReadLine();
                             switch (caso2.ToLower())
@@ -178,7 +192,15 @@ void UsarSistema()
                                     ExibirDadosProduto();
                                     break;
 
+                                case "4":
+                                    AdicionarQuantidade();
+                                    break;
+
                                 case "5":
+                                    RemoveItemEstoque();
+                                    break;
+
+                                case "6":
                                     break;
                             }
                             break;
@@ -204,7 +226,7 @@ void UsarSistema()
                     Console.WriteLine(enunciadoEscolhas);
                     Console.WriteLine("1. Registrar Venda");
                     Console.WriteLine("");
-                    Console.WriteLine("5 VOLTAR ao menu anterior");
+                    Console.WriteLine("5. Para VOLTAR ao menu anterior");
 
                     escolha = Console.ReadLine();
                     if (escolha.ToLower() == "voltar")
@@ -237,8 +259,11 @@ void UsarSistema()
                     Console.Clear();
                     Console.WriteLine(enunciadoEscolhas);
                     Console.WriteLine("1.  Criar e adicionar um Produto ao Estoque");
+                    Console.WriteLine("2. Exibir Dados do Produto");
+                    Console.WriteLine("3. Adicionar Adicionar Quantidade a Um Produto");
+                    Console.WriteLine("4. Romover o Produto do Estoque");
                     Console.WriteLine("");
-                    Console.WriteLine("5 VOLTAR ao menu anterior");
+                    Console.WriteLine("5. Para VOLTAR ao menu anterior");
 
                     escolha = Console.ReadLine();                    
                     switch (escolha.ToLower())
@@ -251,7 +276,13 @@ void UsarSistema()
                             ExibirDadosProduto();                            
                             break;
 
+                        case "3":
+                        AdicionarQuantidade();
+                        break;
 
+                        case "4":
+                            RemoveItemEstoque();
+                            break;
 
                         case "5":
                             escolha = "voltar";
@@ -352,6 +383,26 @@ void UsarSistema()
 
             estoque.ExibirInformacoesProduto(empregado, codigoProduto);
 
+            Console.ReadKey();
+            Console.Clear();
+        }
+        void RemoveItemEstoque()
+        {
+            Console.WriteLine("Digite o Código do Produto");
+             int codigoProduto = int.Parse(Console.ReadLine());
+            estoque.RemoverItem(empregado, codigoProduto);
+            Console.ReadKey();
+            Console.Clear();
+        }
+        void AdicionarQuantidade()
+        {
+            Console.WriteLine("Digite o Código do Produto");
+            int codigoProduto = int.Parse(Console.ReadLine());
+
+            Console.WriteLine("Digite a Quantidade do Produto Que Deseja Adicionar");
+            int quantidade = int.Parse(Console.ReadLine());
+
+            estoque.AdicionarQuantidade(empregado, codigoProduto, quantidade);
             Console.ReadKey();
             Console.Clear();
         }
